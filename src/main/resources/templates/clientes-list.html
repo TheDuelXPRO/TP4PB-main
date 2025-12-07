@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<div class="header">
+    <h1 class="title">Central de Suporte</h1>
+    <p class="subtitle">Gerencie os clientes autorizados a abrir chamados.</p>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="actions">
+            <div>
+                <h2 class="section-title">Clientes</h2>
+                <p class="subtitle" style="color: var(--muted); margin:4px 0 0;">Cadastre e remova clientes com rapidez.</p>
+            </div>
+            <a class="btn secondary" th:href="@{/chamados}">Ver Chamados</a>
+        </div>
+
+        <div th:if="${mensagemSucesso}" class="alert alert-success" th:text="${mensagemSucesso}"></div>
+
+        <form th:action="@{/clientes}" th:object="${cliente}" method="post" style="margin-bottom: 16px;">
+            <div class="form-grid">
+                <div>
+                    <label>E-mail do Cliente</label>
+                    <input type="email" th:field="*{email}" placeholder="cliente@empresa.com"/>
+                    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div style="display: flex; align-items: flex-end; gap: 12px;">
+                    <button class="btn primary" type="submit">Adicionar</button>
+                    <a class="btn secondary" th:href="@{/clientes}">Limpar</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>E-mail</th>
+                    <th style="width: 120px;">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${clientes}">
+                    <td th:text="${c.id}"></td>
+                    <td th:text="${c.email}"></td>
+                    <td>
+                        <form th:action="@{/clientes/{id}/excluir(id=${c.id})}" method="post" onsubmit="return confirm('Confirma exclusão do cliente?');">
+                            <button class="btn danger" type="submit">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(clientes)}">
+                    <td colspan="3" style="text-align: center; color: var(--muted); padding: 20px;">Nenhum cliente cadastrado até o momento.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
